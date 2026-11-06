@@ -240,6 +240,7 @@ jobs:
               const uploaded = await client.uploadArtifact(
                 "audio-" + chunk.id,
                 [filePath],
+                path.resolve("..", "chunks"),
                 { retentionDays: 1, compressionLevel: 0 }
               );
               console.log("Uploaded audio-" + chunk.id + ": " + uploaded.size + " bytes");

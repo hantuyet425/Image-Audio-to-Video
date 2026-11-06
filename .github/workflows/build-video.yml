@@ -161,12 +161,12 @@ jobs:
           test -s media/input-image
           test -s media/input-audio
           duration="$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 media/input-audio)"
-          echo "Rendering at ${WIDTH}x${HEIGHT}, 30 fps, audio duration ${duration}s"
+          echo "Rendering at ${WIDTH}x${HEIGHT}, 24 fps, audio duration ${duration}s"
           ffmpeg -hide_banner -y \
-            -loop 1 -framerate 30 -i media/input-image \
+            -loop 1 -framerate 24 -i media/input-image \
             -i media/input-audio \
             -map 0:v:0 -map 1:a:0 \
-            -vf "scale=${WIDTH}:${HEIGHT}:force_original_aspect_ratio=decrease,pad=${WIDTH}:${HEIGHT}:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,fps=30,format=yuv420p" \
+            -vf "scale=${WIDTH}:${HEIGHT}:force_original_aspect_ratio=decrease,pad=${WIDTH}:${HEIGHT}:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,fps=24,format=yuv420p" \
             -c:v libx264 -preset veryfast -crf 23 \
             -c:a aac -b:a 192k \
             -t "$duration" -movflags +faststart output.mp4

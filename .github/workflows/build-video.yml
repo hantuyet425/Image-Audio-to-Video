@@ -17,6 +17,9 @@ on:
           - 720p
           - 1080p
         default: 720p
+  push:
+    paths:
+      - ".github/run-previous-17h-audio.txt"
 
 permissions:
   actions: read

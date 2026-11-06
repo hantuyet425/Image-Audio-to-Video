@@ -211,7 +211,7 @@ jobs:
               for key, value in outputs.items():
                   f.write(f"{key}={value}\n")
           print(f"Created {len(files)} audio chunks.")
-          print(f"Created {len(publish_items)} artifact-publisher groups.")
+          print(f"Created {group_count} audio bundles, with at most four chunks in each.")
           PY
 
       - name: Upload audio bundle 01

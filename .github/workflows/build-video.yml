@@ -17,8 +17,12 @@ on:
           - 720p
           - 1080p
         default: 720p
+  push:
+    paths:
+      - ".github/run-previous-17h-audio.txt"
 
 permissions:
+  actions: read
   contents: read
 
 concurrency:
@@ -41,7 +45,28 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Download validated media from the previous 17-hour run
+        if: github.event_name == 'push'
+        uses: actions/download-artifact@v4
+        with:
+          name: validated-media
+          path: previous-media
+          repository: harrytheanh254/Image-Audio-to-Video
+          run-id: 41989669636
+          github-token: ${{ github.token }}
+
+      - name: Restore source media from the previous run
+        if: github.event_name == 'push'
+        run: |
+          set -euo pipefail
+          test -s previous-media/input-audio
+          test -s previous-media/input-image
+          cp previous-media/input-audio input-audio
+          cp previous-media/input-image input-image
+          echo "Reusing the exact validated audio and image from run 41989669636."
+
       - name: Automatically find the latest uploaded image
+        if: github.event_name == 'workflow_dispatch'
         run: |
           set -euo pipefail
           python - <<'PY'
@@ -87,6 +112,7 @@ jobs:
           sudo apt-get install -y ffmpeg
 
       - name: Download audio
+        if: github.event_name == 'workflow_dispatch'
         env:
           MEDIA_URL: ${{ inputs.audio_url }}
         run: |
@@ -282,7 +308,7 @@ jobs:
 
       - name: Render MP4 chunk
         env:
-          RESOLUTION: ${{ inputs.resolution }}
+          RESOLUTION: ${{ inputs.resolution || '720p' }}
           AUDIO_FILE: ${{ matrix.file }}
           CHUNK_ID: ${{ matrix.id }}
         run: |

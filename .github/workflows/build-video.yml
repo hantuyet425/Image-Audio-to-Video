@@ -245,9 +245,9 @@ jobs:
           node <<'NODE'
           const fs = require("node:fs");
           const path = require("node:path");
-          const { DefaultArtifactClient } = require("@actions/artifact");
-
           async function main() {
+            // @actions/artifact v6 is ESM; load it with dynamic import from this CommonJS script.
+            const { DefaultArtifactClient } = await import("@actions/artifact");
             const chunks = JSON.parse(process.env.CHUNK_FILES || "[]");
             if (!Array.isArray(chunks) || chunks.length === 0 || chunks.length > 9) {
               throw new Error("Unexpected audio chunk group size: " + chunks.length);
